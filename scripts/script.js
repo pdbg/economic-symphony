@@ -36,27 +36,54 @@ const loadData = async (countryCode, yearStart, yearEnd) => {
   const inflationRate = await loadInflationRate(countryCode, yearStart, yearEnd);
   const interestRate = await loadInterestRate(countryCode, yearStart, yearEnd);
 
-  return {
-    'gdpGrowthRate': {
-      'lastUpdated': gdpGrowthRate[0].lastupdated,
-      'type': 'GDP Growth (%)',
-      'data': gdpGrowthRate[1]
-    }, 'inflationRate': {
-      'lastUpdated': inflationRate[0].lastupdated,
-      'type': 'Inflation Rate (%)',
-      'data': inflationRate[1]
-    }, 'interestRate': {
-      'lastUpdated': interestRate[0].lastupdated,
-      'type': 'Interest Rate (%)',
-      'data': interestRate[1]
+  const data = {};
+  gdpGrowthRate[1].forEach(e => {
+    data[e.date] = {
+      'date': e.date,
+      'gdp': e.value,
     }
+  });
+  inflationRate[1].forEach(e => {
+    if (e.date in data) {
+      data[e.date]['inflation'] = e.value;
+    } else {
+      data[e.date] = {
+        'date': e.date,
+        'gdp': undefined,
+        'inflation': e.value,
+      }
+    }
+  });
+  interestRate[1].forEach(e => {
+    if (e.date in data) {
+      data[e.date]['interest'] = e.value;
+    } else {
+      data[e.date] = {
+        'date': e.date,
+        'gdp': undefined,
+        'inflation': undefined,
+        'interest': e.value,
+      }
+    }
+  });
+
+  return {
+    'lastUpdated': d3.min([
+      gdpGrowthRate[0].lastupdated,
+      inflationRate[0].lastupdated,
+      interestRate[0].lastupdated
+    ]),
+    'data': Object.values(data),
   };
 };
 
 /**
  * Draw chart
  */
-const drawChart = async (data) => {
+const drawChart = async (wdiData) => {
+  const lastUpdated = wdiData.lastUpdated,
+    data = wdiData.data;
+
   console.log(data);
 
   var svg = d3.select("#graph"),
@@ -67,13 +94,13 @@ const drawChart = async (data) => {
   const parseTime = d3.timeParse("%Y");
 
   const x = d3.scaleTime().range([0, width]).nice()
-    .domain(d3.extent(data.gdpGrowthRate.data, d => parseTime(d.date)));
+    .domain(d3.extent(data, d => parseTime(d.date)));
   const x1 = d3.scaleBand().range([0, width]).padding(0.2)
-    .domain(data.gdpGrowthRate.data.map(d => parseTime(d.date)));
+    .domain(data.map(d => parseTime(d.date)));
   const y1 = d3.scaleLinear().rangeRound([height, 0])
-    .domain(d3.extent(data.gdpGrowthRate.data, d => d.value));
+    .domain(d3.extent(data, d => d.gdp));
   const y2 = d3.scaleLinear().rangeRound([height, 0])
-    .domain(d3.extent([...data.interestRate.data, ...data.inflationRate.data], d => d.value));
+  .domain(d3.extent([...d3.extent(data, d => d.inflation), ...d3.extent(data, d => d.interest)]));
 
   const g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -123,9 +150,9 @@ const drawChart = async (data) => {
 
   // Get GDP Growth Line Path
   const line1 = d3.line()
-    .defined(d => d.value)
+    .defined(d => d.gdp)
     .x(d => x(parseTime(d.date)))
-    .y(d => y1(d.value))
+    .y(d => y1(d.gdp))
     .curve(d3.curveCardinal.tension(0.5));
 
   // Draw GDP Growth Line
@@ -134,8 +161,8 @@ const drawChart = async (data) => {
     .style("position", "absolute")
     .style("z-index", "2")
     .append("path")
-    .datum(data.gdpGrowthRate.data)
-    .datum(data.gdpGrowthRate.data.filter(line1.defined()))
+    .datum(data)
+    .datum(data.filter(line1.defined()))
     .attr("class", "line")
     .attr("fill", "none")
     .attr("stroke", "darkgreen")
@@ -175,11 +202,11 @@ const drawChart = async (data) => {
   //   .on("mousemove", function(){ tooltip2.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
   //   .on("mouseout", function(){ tooltip2.style("visibility", "hidden");});
 
-  // Get Inflation / Interest Line Path
+  // Get Inflation Line Path
   const line2 = d3.line()
-    .defined(d => d.value)
+    .defined(d => d.inflation)
     .x(d => x(parseTime(d.date)))
-    .y(d => y2(d.value))
+    .y(d => y2(d.inflation))
     .curve(d3.curveCardinal.tension(0.5));
 
   // Draw Inflation Line
@@ -188,8 +215,8 @@ const drawChart = async (data) => {
     .style("position", "absolute")
     .style("z-index", "2")
     .append("path")
-    .datum(data.inflationRate.data)
-    .datum(data.inflationRate.data.filter(line2.defined()))
+    .datum(data)
+    .datum(data.filter(line2.defined()))
     .attr("class", "line")
     .attr("fill", "none")
     .attr("stroke", "red")
@@ -198,21 +225,28 @@ const drawChart = async (data) => {
     .attr("stroke-linecap", "round")
     .attr("d", line2);
 
+  // Get Inflation Line Path
+  const line3 = d3.line()
+    .defined(d => d.interest)
+    .x(d => x(parseTime(d.date)))
+    .y(d => y2(d.interest))
+    .curve(d3.curveCardinal.tension(0.5));
+
   // Draw Interest Rate Line
   g.append("g")
     .attr("class", "line-group")
     .style("position", "absolute")
     .style("z-index", "2")
     .append("path")
-    .datum(data.interestRate.data)
-    .datum(data.interestRate.data.filter(line2.defined()))
+    .datum(data)
+    .datum(data.filter(line3.defined()))
     .attr("class", "line")
     .attr("fill", "none")
     .attr("stroke", "orange")
     .attr("stroke-width", 1)
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round")
-    .attr("d", line2);
+    .attr("d", line3);
 
   // Tooltip
   var tooltip2 = d3.select("body")
