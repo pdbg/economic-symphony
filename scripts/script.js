@@ -2,7 +2,21 @@
  * Initialize the DOM
  */
 const init = async () => {
-  const data = await loadData('US', 1980, 2020);
+  await fetchDataAndDrawChart();
+
+  d3.select("#country-filter").on("change", fetchDataAndDrawChart);
+  d3.select("#start-year").on("change", fetchDataAndDrawChart);
+  d3.select("#end-year").on("change", fetchDataAndDrawChart);
+};
+
+/**
+ * Fetches data from wdi.worldbank.com and renders the chart
+ */
+const fetchDataAndDrawChart = async () => {
+  const countryCode = d3.select("#country-filter").property("value");
+  const startYear = d3.select("#start-year").property("value");
+  const endYear = d3.select("#end-year").property("value");
+  const data = await loadData(countryCode, startYear, endYear);
 
   drawChart(data);
 };
@@ -91,6 +105,8 @@ const drawChart = async (wdiData) => {
     width = svg.attr("width") - margin.left - margin.right,
     height = svg.attr("height") - margin.top - margin.bottom;
 
+  svg.html('');
+
   const parseTime = d3.timeParse("%Y");
 
   const x = d3.scaleTime().range([0, width]).nice()
@@ -103,7 +119,9 @@ const drawChart = async (wdiData) => {
   .domain(d3.extent([...d3.extent(data, d => d.inflation), ...d3.extent(data, d => d.interest)]));
 
   // Tooltip
-  var tooltip2 = d3.select("body")
+  const tooltipCtr = d3.select("#tooltip-ctr");
+  tooltipCtr.html('');
+  var tooltip2 = tooltipCtr
     .append("div")
     // .attr("class", "tooltip")
     .style("position", "absolute")
@@ -115,7 +133,6 @@ const drawChart = async (wdiData) => {
   const fmt = n => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
   const mouseoverTooltip = (event, d) => {
-    console.log(d);
     tooltip2.style("visibility", "visible")
       .html("<strong>" + d.date + "</strong><br>" + "GDP Growth   : " + fmt(d.gdp) + "<br>Inflation Rate: " + fmt(d.inflation) + "<br>Interest Rate : " + fmt(d.interest));
   };
