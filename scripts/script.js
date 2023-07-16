@@ -354,4 +354,15 @@ const drawChart = async (wdiData) => {
   g.append("text").attr("class","legend").attr("x", 685).attr("y",90).text("Interest Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
   g.selectAll(".legend").attr("transform", "translate(-50,0)")
 
+  // Annotations
+  if (annotations != undefined) {
+    const makeAnnotations = d3.annotation()
+      .type(d3.annotationLabel)
+      .annotations(annotations);
+
+    d3.select("#graph")
+      .append("g")
+      .attr("class", "annotation-group")
+      .call(makeAnnotations);
+  }
 };
