@@ -25,30 +25,46 @@ const fetchDataAndDrawChart = async () => {
  * Gets the GDP Growth Rate Data from Workbank Data
  * @param countryCode country code
  */
-const loadGDPGrowthRate = async (countryCode, yearStart, yearEnd) => {
-  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=60&date=${yearStart}:${yearEnd}`)
+const loadGDPGrowthRate = async (countryCode) => {
+  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/NY.GDP.MKTP.KD.ZG?format=json&per_page=100`)
 };
 
 /**
  * Gets the Inflation Rate Data from Workbank Data
  * @param countryCode country code
  */
-const loadInflationRate = async (countryCode, yearStart, yearEnd) => {
-  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/FP.CPI.TOTL.ZG?format=json&per_page=60&date=${yearStart}:${yearEnd}`)
+const loadInflationRate = async (countryCode) => {
+  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/FP.CPI.TOTL.ZG?format=json&per_page=100`)
 };
 
 /**
  * Gets the Inflation Rate Data from Workbank Data
  * @param countryCode country code
  */
-const loadInterestRate = async (countryCode, yearStart, yearEnd) => {
-  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/FR.INR.LEND?format=json&per_page=60&date=${yearStart}:${yearEnd}`)
+const loadInterestRate = async (countryCode) => {
+  return await d3.json(`https://api.worldbank.org/v2/country/${countryCode}/indicator/FR.INR.LEND?format=json&per_page=100`)
 };
 
-const loadData = async (countryCode, yearStart, yearEnd) => {
-  const gdpGrowthRate = await loadGDPGrowthRate(countryCode, yearStart, yearEnd);
-  const inflationRate = await loadInflationRate(countryCode, yearStart, yearEnd);
-  const interestRate = await loadInterestRate(countryCode, yearStart, yearEnd);
+var WDI_DATA;
+
+/**
+ * Loads Data from cache if available or hits to server
+ */
+const loadData = async (countryCode, startYear, endYear) => {
+  if (WDI_DATA == undefined) {
+    WDI_DATA = await loadAllData(countryCode);
+  }
+
+  return {
+    'lastUpdated': WDI_DATA.lastUpdated,
+    'data': d3.filter(WDI_DATA.data, d => d.date >= startYear && d.date <= endYear),
+  }
+};
+
+const loadAllData = async (countryCode) => {
+  const gdpGrowthRate = await loadGDPGrowthRate(countryCode);
+  const inflationRate = await loadInflationRate(countryCode);
+  const interestRate = await loadInterestRate(countryCode);
 
   const data = {};
   gdpGrowthRate[1].forEach(e => {
