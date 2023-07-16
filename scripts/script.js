@@ -68,6 +68,8 @@ const drawChart = async (data) => {
 
   const x = d3.scaleTime().range([0, width]).nice()
     .domain(d3.extent(data.gdpGrowthRate.data, d => parseTime(d.date)));
+  const x1 = d3.scaleBand().range([0, width]).padding(0.2)
+    .domain(data.gdpGrowthRate.data.map(d => parseTime(d.date)));
   const y1 = d3.scaleLinear().rangeRound([height, 0])
     .domain(d3.extent(data.gdpGrowthRate.data, d => d.value));
   const y2 = d3.scaleLinear().rangeRound([height, 0])
@@ -142,6 +144,27 @@ const drawChart = async (data) => {
     .attr("stroke-linecap", "round")
     .attr("d", line1);
 
+  // Create the bars
+  // g.append("g")
+  //   .attr("class", "bar-group")
+  //   .selectAll(".bar")
+  //   .data(data.gdpGrowthRate.data)
+  //   .join("rect")
+  //   .attr("class", "bar")
+  //   .style("position", "absolute")
+  //   .style("z-index", "-1")
+  //   .attr("x", d => x1(parseTime(d.date)))
+  //   .attr("y", d => y1(d.value))
+  //   .attr("width", x1.bandwidth())
+  //   //.attr("width", width_1/data.length)
+  //   .attr("height", d => height - y1(d.value))
+  //   .on("mouseover", function(d) {
+  //       tooltip2.style("visibility", "visible")
+  //           .html("<strong>" + d.date + "</strong><br>" + "Value: " + d.value + "<br>Rate: " + d.rate)
+  //   })
+  //   .on("mousemove", function(){ tooltip2.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+  //   .on("mouseout", function(){ tooltip2.style("visibility", "hidden");});
+
   // Get Inflation / Interest Line Path
   const line2 = d3.line()
     .defined(d => d.value)
@@ -180,4 +203,14 @@ const drawChart = async (data) => {
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round")
     .attr("d", line2);
+
+  // Tooltip
+  var tooltip2 = d3.select("body")
+    .append("div")
+    // .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("font-size", "13px")
+    .style("background", "rgba(255, 255, 255, .7)");
 }
