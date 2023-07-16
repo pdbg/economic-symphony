@@ -144,6 +144,16 @@ const drawChart = async (data) => {
     .attr("stroke-linecap", "round")
     .attr("d", line1);
 
+  //legends
+  g.append("rect").attr("class","legend").attr("x", 660).attr("y",40).attr("width",200).attr("height",40).style("fill", "white").style("fill-opacity","70%");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",48).attr("width",10).attr("height",2).style("fill","darkgreen");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",50).text("GDP Growth (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",68).attr("width",10).attr("height",2).style("fill","red");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",70).text("Inflation Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",88).attr("width",10).attr("height",2).style("fill","orange");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",90).text("Interest Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.selectAll(".legend").attr("transform", "translate(-50,0)")
+
   // Create the bars
   // g.append("g")
   //   .attr("class", "bar-group")
