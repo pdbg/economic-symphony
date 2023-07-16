@@ -76,8 +76,8 @@ h1, h2, h3, h4, h5, h6 {
 .path { display: none; }
 .line {
     fill: none;
-    stroke: darkgreen;
-    stroke-width: 2;
+    /* stroke: darkgreen; */
+    /* stroke-width: 1; */
 }
 .axis {
     font: 10px sans-serif;
