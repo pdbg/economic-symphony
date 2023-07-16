@@ -102,9 +102,34 @@ const drawChart = async (wdiData) => {
   const y2 = d3.scaleLinear().rangeRound([height, 0])
   .domain(d3.extent([...d3.extent(data, d => d.inflation), ...d3.extent(data, d => d.interest)]));
 
+  // Tooltip
+  var tooltip2 = d3.select("body")
+    .append("div")
+    // .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("font-size", "13px")
+    .style("background", "rgba(255, 255, 255, .7)");
+
+  const fmt = n => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const mouseoverTooltip = (event, d) => {
+    console.log(d);
+    tooltip2.style("visibility", "visible")
+      .html("<strong>" + d.date + "</strong><br>" + "GDP Growth   : " + fmt(d.gdp) + "<br>Inflation Rate: " + fmt(d.inflation) + "<br>Interest Rate : " + fmt(d.interest));
+  };
+
+  const mousemoveTooltip = (event) => {
+    tooltip2.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");
+  };
+
+  const mouseoutTooltip = () => {
+    tooltip2.style("visibility", "hidden");
+  };
+
   const g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
   // X - Axis
   g.append("g")
@@ -171,15 +196,21 @@ const drawChart = async (wdiData) => {
     .attr("stroke-linecap", "round")
     .attr("d", line1);
 
-  //legends
-  g.append("rect").attr("class","legend").attr("x", 660).attr("y",40).attr("width",200).attr("height",40).style("fill", "white").style("fill-opacity","70%");
-  g.append("rect").attr("class","legend").attr("x", 670).attr("y",48).attr("width",10).attr("height",2).style("fill","darkgreen");
-  g.append("text").attr("class","legend").attr("x", 685).attr("y",50).text("GDP Growth (%)").style("font-size", "12px").attr("alignment-baseline","middle");
-  g.append("rect").attr("class","legend").attr("x", 670).attr("y",68).attr("width",10).attr("height",2).style("fill","red");
-  g.append("text").attr("class","legend").attr("x", 685).attr("y",70).text("Inflation Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
-  g.append("rect").attr("class","legend").attr("x", 670).attr("y",88).attr("width",10).attr("height",2).style("fill","orange");
-  g.append("text").attr("class","legend").attr("x", 685).attr("y",90).text("Interest Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
-  g.selectAll(".legend").attr("transform", "translate(-50,0)")
+  // Add tooltip to GDP Line
+  g.append("g")
+    .attr("class", "circle-group")
+    .selectAll(".dot")
+    .data(data)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => x(parseTime(d.date)))
+    .attr("cy", d => y1(d.gdp))
+    .attr("r", 10)
+    .style("opacity", 0)
+    .on("mouseover", mouseoverTooltip)
+    .on("mousemove", mousemoveTooltip)
+    .on("mouseout", mouseoutTooltip);
 
   // Create the bars
   // g.append("g")
@@ -225,7 +256,23 @@ const drawChart = async (wdiData) => {
     .attr("stroke-linecap", "round")
     .attr("d", line2);
 
-  // Get Inflation Line Path
+  // Add tooltip to Inflation Line
+  g.append("g")
+    .attr("class", "circle-group")
+    .selectAll(".dot")
+    .data(data)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => x(parseTime(d.date)))
+    .attr("cy", d => y2(d.inflation))
+    .attr("r", 10)
+    .style("opacity", 0)
+    .on("mouseover", mouseoverTooltip)
+    .on("mousemove", mousemoveTooltip)
+    .on("mouseout", mouseoutTooltip);
+
+  // Get Interest Line Path
   const line3 = d3.line()
     .defined(d => d.interest)
     .x(d => x(parseTime(d.date)))
@@ -248,13 +295,30 @@ const drawChart = async (wdiData) => {
     .attr("stroke-linecap", "round")
     .attr("d", line3);
 
-  // Tooltip
-  var tooltip2 = d3.select("body")
-    .append("div")
-    // .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("visibility", "hidden")
-    .style("font-size", "13px")
-    .style("background", "rgba(255, 255, 255, .7)");
-}
+  // Add tooltip to Inflation Line
+  g.append("g")
+    .attr("class", "circle-group")
+    .selectAll(".dot")
+    .data(data)
+    .enter()
+    .append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", d => x(parseTime(d.date)))
+    .attr("cy", d => y2(d.interest))
+    .attr("r", 10)
+    .style("opacity", 0)
+    .on("mouseover", mouseoverTooltip)
+    .on("mousemove", mousemoveTooltip)
+    .on("mouseout", mouseoutTooltip);
+
+  //legends
+  g.append("rect").attr("class","legend").attr("x", 660).attr("y",40).attr("width",200).attr("height",40).style("fill", "white").style("fill-opacity","70%");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",48).attr("width",10).attr("height",2).style("fill","darkgreen");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",50).text("GDP Growth (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",68).attr("width",10).attr("height",2).style("fill","red");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",70).text("Inflation Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.append("rect").attr("class","legend").attr("x", 670).attr("y",88).attr("width",10).attr("height",2).style("fill","orange");
+  g.append("text").attr("class","legend").attr("x", 685).attr("y",90).text("Interest Rate (%)").style("font-size", "12px").attr("alignment-baseline","middle");
+  g.selectAll(".legend").attr("transform", "translate(-50,0)")
+
+};
