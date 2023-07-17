@@ -116,6 +116,9 @@ const drawChart = async (wdiData) => {
 
   console.log(data);
 
+  const minYear = d3.min(data, d => Number(d.date)),
+        maxYear = d3.max(data, d => Number(d.date));
+
   var svg = d3.select("#graph"),
     margin = {top: 20, right: 35, bottom: 70, left: 30},
     width = svg.attr("width") - margin.left - margin.right,
@@ -355,7 +358,31 @@ const drawChart = async (wdiData) => {
   g.selectAll(".legend").attr("transform", "translate(-50,0)")
 
   // Annotations
-  if (annotations != undefined) {
+  if (HISTORICAL_EVENTS != undefined) {
+    const annotations = HISTORICAL_EVENTS.filter(d => d.year >= minYear && d.year <= maxYear)
+      .map(event => {
+        return {
+          type: d3.annotationCalloutCircle,
+          note: {
+            label: '',
+            title: event.title,
+            wrap: 190
+          },
+          subject: {
+            radius: 20
+          },
+          x: margin.left + x(parseTime(event.year)),
+          y: margin.top + y1(event.gdp),
+          dy: 50,
+          dx: 50,
+          color: "#990000",
+        }
+    }).map(e => {
+      e.dx = (e.x >=width) ? (-e.dx) : e.dx;
+      e.dy = (e.y >=height) ? (-e.dy) : e.dy;
+      return e;
+    });
+
     const makeAnnotations = d3.annotation()
       .type(d3.annotationLabel)
       .annotations(annotations);
