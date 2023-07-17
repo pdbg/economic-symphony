@@ -1,11 +1,77 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <title>Test title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Load d3.js and plugin -->
+  <script src="scripts/d3.v7.min.js"></script>
+  <title>Economic Symphony: A Visual Journey of GDP, Inflation, and Interest Rates</title>
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
 </head>
 
 <body>
-  <h1> Hello world!</h1>
+  <div class="container">
+
+    <header class="emily-header py-3">
+      <div class="text-center">
+        <h1 class="emily-header-logo text-dark"> Economic Symphony: A Visual Journey of GDP, Inflation, and Interest
+          Rates </h1>
+      </div>
+    </header>
+
+    <div class="nav-scroller py-1 mb-2">
+      <nav class="nav d-flex justify-content-between">
+        <a class="p-2 text-muted" href="index.html">Introduction</a>
+        <a class="p-2 text-muted" href="scene-usa.html">USA</a>
+        <a class="p-2 text-muted" href="scene-india.html">India</a>
+        <a class="p-2 text-muted" href="scene-uk.html">United Kingdom</a>
+        <a class="p-2 text-muted" href="scene-others.html">Explore Other Countries</a>
+      </nav>
+    </div>
+
+    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
+      <div class="px-0">
+        <h1 class="display-6 font-italic"> How does GDP, Inflation and Interest Rates correlate each other? </h1>
+        <p class="lead my-3">"Economic Symphony" is a narrative visualization that takes viewers on a captivating
+          journey through the interconnected dynamics of GDP, inflation, and interest rates. Through a combination of
+          interactive visualizations, storytelling, and data exploration, the project aims to provide a deeper
+          understanding of the complex relationship between these economic indicators and their impact.</p>
+      </div>
+    </div>
+    <nav class="blog-pagination">
+      <br><a class="btn btn-outline-primary" href="scene-usa.html"> Let's look at USA Data! </a>
+    </nav>
+    <div>
+      <br>
+      <h5> References </h5>
+      <p> [1] <a href="https://howmuch.net/articles/timeline-economic-history">Major Economic Events Timeline, in one Visual</a> </p>
+      <br>
+    </div>
+  </div>
+
+
+  <footer class="emily-footer">
+    <h6> Data Source </h6>
+    <p> <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG">GDP growth (annual %) | Data (worldbank.org) |
+        Live API</a>
+      <br>
+      <a href="https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG">Inflation, consumer prices (annual %) | Data
+        (worldbank.org) | Live API</a>
+      <br>
+      <a href="https://data.worldbank.org/indicator/FR.INR.LEND">Lending interest rate (%) | Data (worldbank.org) | Live
+        API</a>
+    </p>
+  </footer>
 </body>
 
 </html>
