@@ -19,10 +19,9 @@ const HISTORICAL_EVENTS = [
     gdp: -2.5,
     title: "Bank & Financial Crisis",
   },
-  // {
-  //   year: 2020,
-  //   gdp: -2.5,
-  //   title: "Covid-19 Pandemic",
-  //   description: "in hendrerit gravida rutrum quisque non tellus orci ac auctor augue mauris augue neque gravida",
-  // },
+  {
+    year: 2020,
+    gdp: -2.5,
+    title: "Covid-19 Pandemic",
+  },
 ]

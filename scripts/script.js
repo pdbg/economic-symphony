@@ -227,7 +227,7 @@ const drawChart = async (wdiData) => {
     .attr("class", "line")
     .attr("fill", "none")
     .attr("stroke", "darkgreen")
-    .attr("stroke-width", 1)
+    .attr("stroke-width", 1.25)
     .attr("stroke-linejoin", "round")
     .attr("stroke-linecap", "round")
     .attr("d", line1);
@@ -369,7 +369,7 @@ const drawChart = async (wdiData) => {
             wrap: 190
           },
           subject: {
-            radius: 20
+            radius: 10
           },
           x: margin.left + x(parseTime(event.year)),
           y: margin.top + y1(event.gdp),
@@ -378,8 +378,8 @@ const drawChart = async (wdiData) => {
           color: "#990000",
         }
     }).map(e => {
-      e.dx = (e.x >=width) ? (-e.dx) : e.dx;
-      e.dy = (e.y >=height) ? (-e.dy) : e.dy;
+      e.dx = (e.x >=(width-300)) ? (-e.dx) : e.dx;
+      e.dy = (e.y >=(height-100)) ? (-e.dy) : e.dy;
       return e;
     });
 
