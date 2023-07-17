@@ -114,7 +114,7 @@ const drawChart = async (wdiData) => {
   const lastUpdated = wdiData.lastUpdated,
     data = wdiData.data;
 
-  console.log(data);
+  d3.select("#last-updated").html(lastUpdated);
 
   const minYear = d3.min(data, d => Number(d.date)),
         maxYear = d3.max(data, d => Number(d.date));
