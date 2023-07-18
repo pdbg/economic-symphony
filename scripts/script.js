@@ -151,7 +151,7 @@ const drawChart = async (wdiData) => {
     .style("font-size", "13px")
     .style("background", "rgba(255, 255, 255, .7)");
 
-  const fmt = n => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const fmt = n => n && n != null ? n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '';
 
   const mouseoverTooltip = (event, d) => {
     tooltip2.style("visibility", "visible")
