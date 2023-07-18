@@ -46,13 +46,15 @@ const loadInterestRate = async (countryCode) => {
 };
 
 var WDI_DATA;
+var COUNTRY_SELECTED;
 
 /**
  * Loads Data from cache if available or hits to server
  */
 const loadData = async (countryCode, startYear, endYear) => {
-  if (WDI_DATA == undefined) {
+  if (COUNTRY_SELECTED == undefined || COUNTRY_SELECTED != countryCode || WDI_DATA == undefined) {
     WDI_DATA = await loadAllData(countryCode);
+    COUNTRY_SELECTED = countryCode;
   }
 
   return {
@@ -358,7 +360,7 @@ const drawChart = async (wdiData) => {
   g.selectAll(".legend").attr("transform", "translate(-50,0)")
 
   // Annotations
-  if (HISTORICAL_EVENTS != undefined) {
+  if (typeof HISTORICAL_EVENTS !== 'undefined') {
     const annotations = HISTORICAL_EVENTS.filter(d => d.year >= minYear && d.year <= maxYear)
       .map(event => {
         return {

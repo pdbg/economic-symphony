@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Load d3.js and plugin -->
+  <script src="scripts/d3.v7.min.js"></script>
+  <script src="scripts/d3-annotation.min.js"></script>
+  <title>Economic Symphony: A Visual Journey of GDP, Inflation, and Interest Rates</title>
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+</head>
+
+<body onload="init()">
+  <div class="container">
+    <header class="emily-header py-3">
+      <div class="text-center">
+        <h1 class="emily-header-logo text-dark">Economic Symphony: A Visual Journey of GDP, Inflation, and Interest
+          Rates</h1>
+      </div>
+    </header>
+    <div class="nav-scroller py-1 mb-2">
+      <nav class="nav d-flex justify-content-between">
+        <a class="p-2 text-muted" href="index.html">Introduction</a>
+        <a class="p-2 text-muted" href="scene-usa.html">USA</a>
+        <a class="p-2 text-muted" href="scene-india.html">India</a>
+        <a class="p-2 text-muted" href="scene-uk.html">United Kingdom</a>
+        <a class="p-2 text-muted" href="scene-others.html">Explore Other Countries</a>
+      </nav>
+    </div>
+  </div>
+  <main role="main" class="container">
+    <div class="row">
+      <div class="blog-main p-md-4">
+        <div class="blog-post">
+          <h3>Correlation of GDP, Inflation and Interest</h3>
+          <p>TODO</p>
+
+
+          <div class="text-center">
+            <label for="country-filter">Country: </label>
+            <select class="form-select mb-3" id="country-filter">
+              <option value="AE">United Arab Emirates</option>
+              <option value="AR">Argentina</option>
+              <option value="AU" selected>Australia</option>
+              <option value="AT">Austria</option>
+              <option value="BE">Belgium</option>
+              <option value="BD">Bangladesh</option>
+              <option value="BY">Belarus</option>
+              <option value="BZ">Belize</option>
+              <option value="BM">Bermuda</option>
+              <option value="BR">Brazil</option>
+              <option value="BT">Bhutan</option>
+              <option value="CA">Canada</option>
+              <option value="CH">Switzerland</option>
+              <option value="CL">Chile</option>
+              <option value="CN">China</option>
+              <option value="CM">Cameroon</option>
+              <option value="CO">Colombia</option>
+              <option value="CR">Costa Rica</option>
+              <option value="CU">Cuba</option>
+              <option value="CZ">Czechia</option>
+              <option value="DE">Germany</option>
+              <option value="DK">Denmark</option>
+              <option value="DZ">Algeria</option>
+              <option value="ES">Spain</option>
+              <option value="FI">Finland</option>
+              <option value="FR">France</option>
+              <option value="GN">Guinea</option>
+              <option value="GR">Greece</option>
+              <option value="GL">Greenland</option>
+              <option value="HU">Hungary</option>
+              <option value="IE">Ireland</option>
+              <option value="IQ">Iraq</option>
+              <option value="IS">Iceland</option>
+              <option value="IL">Israel</option>
+              <option value="IT">Italy</option>
+              <option value="JM">Jamaica</option>
+              <option value="JP">Japan</option>
+              <option value="KE">Kenya</option>
+              <option value="KW">Kuwait</option>
+              <option value="LY">Libya</option>
+              <option value="LK">Sri Lanka</option>
+              <option value="MX">Mexico</option>
+              <option value="MM">Myanmar</option>
+              <option value="MN">Mongolia</option>
+              <option value="MU">Mauritius</option>
+              <option value="MY">Malaysia</option>
+              <option value="NG">Nigeria</option>
+              <option value="NL">Netherlands</option>
+              <option value="NO">Norway</option>
+              <option value="NP">Nepal</option>
+              <option value="NZ">New Zealand</option>
+              <option value="OM">Oman</option>
+              <option value="PK">Pakistan</option>
+              <option value="PH">Philippines</option>
+              <option value="PL">Poland</option>
+              <option value="PT">Portugal</option>
+              <option value="PY">Paraguay</option>
+              <option value="QA">Qatar</option>
+              <option value="RU">Russian Federation</option>
+              <option value="SG">Singapore</option>
+              <option value="SK">Slovak Republic</option>
+              <option value="SI">Slovenia</option>
+              <option value="SE">Sweden</option>
+              <option value="SC">Seychelles</option>
+              <option value="TH">Thailand</option>
+              <option value="TW">Taiwan, China</option>
+              <option value="TZ">Tanzania</option>
+              <option value="UG">Uganda</option>
+              <option value="UA">Ukraine</option>
+              <option value="ZM">Zambia</option>
+              <option value="ZW">Zimbabwe</option>
+            </select>
+            <label for="startYear">Start Year: </label>
+            <input type="number" id="start-year" name="startYear" value="1980" min="1980" max="2010">
+            <label for="endYear">End Year: </label>
+            <input type="number" id="end-year" name="endYear" value="2020" min="2010" max="2020">
+            <label>Last Updated: </label><span id="last-updated"></span>
+          </div>
+          <br>
+
+          <div class="text-center">
+            <svg id="graph" width="900" height="800"></svg>
+            <script src="scripts/script.js"></script>
+            <!-- <script src="scripts/events-india.js"></script> -->
+          </div>
+        </div>
+
+        <nav class="blog-pagination">
+          <a class="btn btn-outline-primary" href="scene-uk.html">Previous: United Kingdom</a>
+        </nav>
+
+        <div>
+          <h5>References</h5>
+          <p> [1] <a href="">Ref1</a>
+          <p> [2] <a href="">Ref2</a> </p>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="tooltip-ctr"></div>
+  </main>
+
+  <footer class="emily-footer">
+    <h6> Data Source </h6>
+    <p> <a href="https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG">GDP growth (annual %) | Data (worldbank.org) |
+        Live API</a>
+      <br>
+      <a href="https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG">Inflation, consumer prices (annual %) | Data
+        (worldbank.org) | Live API</a>
+      <br>
+      <a href="https://data.worldbank.org/indicator/FR.INR.LEND">Lending interest rate (%) | Data (worldbank.org) | Live
+        API</a>
+      <br> Events Source: <a href="">Source</a>
+    </p>
+  </footer>
+</body>
+
+</html>
