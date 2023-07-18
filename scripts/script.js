@@ -46,13 +46,15 @@ const loadInterestRate = async (countryCode) => {
 };
 
 var WDI_DATA;
+var COUNTRY_SELECTED;
 
 /**
  * Loads Data from cache if available or hits to server
  */
 const loadData = async (countryCode, startYear, endYear) => {
-  if (WDI_DATA == undefined) {
+  if (COUNTRY_SELECTED == undefined || COUNTRY_SELECTED != countryCode || WDI_DATA == undefined) {
     WDI_DATA = await loadAllData(countryCode);
+    COUNTRY_SELECTED = countryCode;
   }
 
   return {
@@ -114,7 +116,7 @@ const drawChart = async (wdiData) => {
   const lastUpdated = wdiData.lastUpdated,
     data = wdiData.data;
 
-  console.log(data);
+  d3.select("#last-updated").html(lastUpdated);
 
   const minYear = d3.min(data, d => Number(d.date)),
         maxYear = d3.max(data, d => Number(d.date));
@@ -149,7 +151,7 @@ const drawChart = async (wdiData) => {
     .style("font-size", "13px")
     .style("background", "rgba(255, 255, 255, .7)");
 
-  const fmt = n => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const fmt = n => n && n != null ? n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '';
 
   const mouseoverTooltip = (event, d) => {
     tooltip2.style("visibility", "visible")
@@ -358,7 +360,7 @@ const drawChart = async (wdiData) => {
   g.selectAll(".legend").attr("transform", "translate(-50,0)")
 
   // Annotations
-  if (HISTORICAL_EVENTS != undefined) {
+  if (typeof HISTORICAL_EVENTS !== 'undefined') {
     const annotations = HISTORICAL_EVENTS.filter(d => d.year >= minYear && d.year <= maxYear)
       .map(event => {
         return {
